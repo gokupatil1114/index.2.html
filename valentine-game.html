@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Gift for Preetu ❤️ </title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            color: #fff;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .game-area {
+            width: 400px;
+            height: 350px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid #fff;
+            margin: 0 auto;
+        }
+
+        .balloon {
+            position: absolute;
+            font-size: 50px;
+            cursor: pointer;
+            user-select: none;
+            animation: float 3s ease-in-out infinite;
+            transition: transform 0.1s;
+            text-decoration: none;
+        }
+
+        .balloon:hover {
+            transform: scale(1.2);
+        }
+
+        .balloon:active {
+            transform: scale(0.9);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 0.5; }
+            100% { transform: scale(0); opacity: 0; }
+        }
+
+        .balloon.popping {
+            animation: pop 0.2s ease-out forwards;
+            pointer-events: none;
+        }
+
+        .score {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        .target {
+            color: #fff;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .win-message {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.85);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .win-message.show {
+            display: flex;
+        }
+
+        .win-content {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            max-width: 90%;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .win-message h2 {
+            color: #fff;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .win-message p {
+            color: #fff;
+            font-size: 1.2rem;
+            line-height: 1.8;
+            white-space: pre-line;
+        }
+
+        .start-btn {
+            background: #fff;
+            color: #ff6b6b;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255,107,107,0.4);
+        }
+
+        .instructions {
+            color: #fff;
+            margin-top: 15px;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎈 PREETU BS 5 BALLOONS FHODO  🎈</h1>
+        <p class="subtitle">For My Dear Preetu bachu 💕</p>
+        
+        <div class="game-area" id="gameArea"></div>
+        
+        <p class="score">Score: <span id="score">0</span></p>
+        <p class="target">Pop 5 balloons to win! 🎉</p>
+        
+        <button class="start-btn" onclick="startGame()" id="startBtn">Start Game</button>
+        <p class="instructions">Click on the balloons to pop them!</p>
+    </div>
+
+    <div class="win-message" id="winMessage">
+        <div class="win-content">
+            <h2>🎉 YOU WIN! , Happy Velentine's Day! 🎉</h2>
+            <p>preetu fir ase hi apne mere dil ko jita hai i luv u ❤️🫂so much chhotu apko kabhi nhi chhorunga happy velentines day my dear sweetheart</p>
+        </div>
+    </div>
+
+    <script>
+        let score = 0;
+        let gameActive = false;
+        let targetScore = 5;
+        let balloonInterval;
+        const gameArea = document.getElementById('gameArea');
+        const scoreDisplay = document.getElementById('score');
+        const winMessage = document.getElementById('winMessage');
+        const startBtn = document.getElementById('startBtn');
+
+        const balloonEmojis = ['🎈', '😘', '🎊', '❤️', '💕', '💖', '💗', '🌸'];
+
+        function createBalloon() {
+            if (!gameActive) return;
+
+            const balloon = document.createElement('div');
+            balloon.className = 'balloon';
+            balloon.textContent = balloonEmojis[Math.floor(Math.random() * balloonEmojis.length)];
+            
+            const x = Math.random() * (gameArea.clientWidth - 60);
+            const y = Math.random() * (gameArea.clientHeight - 60);
+            
+            balloon.style.left = x + 'px';
+            balloon.style.top = y + 'px';
+            
+            balloon.onclick = function() {
+                if (balloon.classList.contains('popping')) return;
+                
+                balloon.classList.add('popping');
+                score++;
+                scoreDisplay.textContent = score;
+                
+                setTimeout(() => {
+                    balloon.remove();
+                }, 200);
+                
+                if (score >= targetScore) {
+                    winGame();
+                }
+            };
+            
+            gameArea.appendChild(balloon);
+            
+            // Remove balloon after 3 seconds if not clicked
+            setTimeout(() => {
+                if (balloon.parentNode && !balloon.classList.contains('popping')) {
+                    balloon.remove();
+                }
+            }, 3000);
+        }
+
+        function startGame() {
+            score = 0;
+            scoreDisplay.textContent = '0';
+            gameActive = true;
+            startBtn.textContent = 'Playing...';
+            startBtn.disabled = true;
+            
+            // Clear existing balloons
+            const existingBalloons = document.querySelectorAll('.balloon');
+            existingBalloons.forEach(b => b.remove());
+            
+            // Create balloons every 800ms
+            balloonInterval = setInterval(createBalloon, 800);
+        }
+
+        function winGame() {
+            gameActive = false;
+            clearInterval(balloonInterval);
+            winMessage.classList.add('show');
+            startBtn.textContent = 'Play Again';
+            startBtn.disabled = false;
+        }
+
+        // Show some initial balloons for preview
+        function showPreviewBalloons() {
+            for (let i = 0; i < 3; i++) {
+                setTimeout(() => {
+                    const balloon = document.createElement('div');
+                    balloon.className = 'balloon';
+                    balloon.textContent = '🎈';
+                    balloon.style.left = (50 + i * 80) + 'px';
+                    balloon.style.top = '100px';
+                    gameArea.appendChild(balloon);
+                }, i * 300);
+            }
+        }
+        
+        showPreviewBalloons();
+    </script>
+</body>
+</html>
